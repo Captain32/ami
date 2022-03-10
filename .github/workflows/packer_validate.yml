@@ -1,0 +1,29 @@
+---
+
+name: Packer
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  packer:
+    runs-on: ubuntu-latest
+    name: packer
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
+      - name: Initialize Packer Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: init
+      
+      # validate templates
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: --var-file=devrole.pkrvars.hcl -var access_key=${{secrets.ACCESS_KEY}} -var secret_key=${{secrets.SECRET_KEY}}
+          target: .
